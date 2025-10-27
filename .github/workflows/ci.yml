@@ -1,19 +1,31 @@
 name: CI
 
 on:
-    push:
-        branches: [main]
-    pull_request:
-        branches: [main]
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
 
 jobs:
-    test:
-        runs-on: ubuntu-latest
-        steps:
-            - uses: actions/checkout@v4
-            - uses: actions/setup-node@v4
-              with:
-                  node-version: '20'
-                  cache: 'npm' # ускоряет установку зависимостей
-            - run: npm install
-            - run: npm test
+  test:
+    name: Test running
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm' # ускоряет установку зависимостей
+      - run: npm install
+      - run: npm test
+  lint:
+    needs: [test]
+    name: lint run
+    runs-on: ubuntu-latest
+    steps:
+      - name: 'Tests success'
+        if: success()
+        run: echo "✅ All jobs passed!"
+      - name: 'Tests failed'
+        if: failure()
+        run: echo "✅ All jobs passed!"

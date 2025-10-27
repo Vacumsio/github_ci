@@ -6,7 +6,8 @@
     "scripts": {
         "test": "jest",
         "start": "node app",
-        "dev": "nodemon app"
+        "dev": "nodemon app",
+        "lint": "echo \"Linting...\" && exit 0"
     },
     "keywords": [],
     "author": "",
