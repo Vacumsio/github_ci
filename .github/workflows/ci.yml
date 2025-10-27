@@ -7,8 +7,20 @@ on:
     branches: [main]
 
 jobs:
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    steps:
+      - name: 'Lint success'
+        if: success()
+        run: echo "✅ Lint passed!"
+      - name: 'Lint failed'
+        if: failure()
+        run: echo "❌ Lint failure!"
+      - run: npm run lint
   test:
-    name: Test running
+    needs: [lint]
+    name: Test jest
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -18,14 +30,15 @@ jobs:
           cache: 'npm' # ускоряет установку зависимостей
       - run: npm install
       - run: npm test
-  lint:
+  notify:
     needs: [test]
-    name: lint run
+    name: Notify
     runs-on: ubuntu-latest
     steps:
-      - name: 'Tests success'
+      - name: 'Test success'
         if: success()
-        run: echo "✅ All jobs passed!"
-      - name: 'Tests failed'
+        run: echo "✅ Test passed!"
+      - name: 'Test failed'
         if: failure()
-        run: echo "✅ All jobs passed!"
+        run: echo "❌ Test failed!"
+      - run: npm run notify
