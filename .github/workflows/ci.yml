@@ -12,13 +12,18 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm' # ускоряет установку зависимостей
+      - run: npm run lint
+      - run: npm install
       - name: 'Lint success'
         if: success()
         run: echo "✅ Lint passed!"
       - name: 'Lint failed'
         if: failure()
         run: echo "❌ Lint failure!"
-      - run: npm run lint
   test:
     needs: [lint]
     name: Test jest
@@ -32,15 +37,15 @@ jobs:
       - run: npm install
       - run: npm test
   notify:
-    needs: [test]
+    needs: [lint, test]
+    if: always()
     name: Notify
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
       - name: 'Test success'
-        if: success()
-        run: echo "✅ Test passed!"
-      - name: 'Test failed'
-        if: failure()
-        run: echo "❌ Test failed!"
-      - run: npm run notify
+        run: |
+          if ["{{ job.status }}" == "success"]; then
+            echo "✅ CI pipeline succeeded!"
+          else
+            echo "❌ CI pipeline failed!"
+          fi
