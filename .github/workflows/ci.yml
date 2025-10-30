@@ -42,10 +42,9 @@ jobs:
     name: Notify
     runs-on: ubuntu-latest
     steps:
-      - name: 'Test success'
-        run: |
-          if ["{{ job.status }}" == "success"]; then
-            echo "✅ CI pipeline succeeded!"
-          else
-            echo "❌ CI pipeline failed!"
-          fi
+      - name: Notify success
+        if: ${{ job.status() == 'success' }}
+        run: echo "✅ CI pipeline succeeded!"
+      - name: Notify failure
+        if: ${{ job.status() != 'success' }}
+        run: echo "❌ CI pipeline failed!"
