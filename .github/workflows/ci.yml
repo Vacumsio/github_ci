@@ -43,8 +43,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Notify success
-        if: ${{ job.status() == 'success' }}
+        if: ${{ needs.lint.result == 'success' && needs.test.result == 'success' }}
         run: echo "✅ CI pipeline succeeded!"
       - name: Notify failure
-        if: ${{ job.status() != 'success' }}
+        if: ${{ needs.lint.result != 'success' || needs.test.result != 'success' }}
         run: echo "❌ CI pipeline failed!"
